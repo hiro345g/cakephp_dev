@@ -1,0 +1,7 @@
+.env
+app3/*
+!app3/tool/create_env.sample.sh
+!app3/tool/setup.sh
+app4/*
+!app4/tool/create_env.sample.sh
+!app4/tool/setup.sh

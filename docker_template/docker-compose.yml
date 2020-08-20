@@ -1,0 +1,40 @@
+version: '3.3'
+
+services:
+  mysql:
+    build:
+      context: ./mysql8.0/
+      args:
+        - HOST_USER_ID=${HOST_USER_ID}
+        - HOST_GROUP_ID=${HOST_GROUP_ID}
+    container_name: "dev_mysql8.0"
+    image: mysql_8.0:0.1
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql8.0/mysql_data:/var/lib/mysql
+      - ./mysql8.0/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  app:
+    depends_on:
+      - mysql 
+    build:
+      context: ./php7.4/
+      args:
+        - HOST_USER_ID=${HOST_USER_ID}
+        - HOST_GROUP_ID=${HOST_GROUP_ID}
+    container_name: "dev_php7.4"
+    image: php_7.4:0.1
+    ports:
+      - 8080:80
+    volumes:
+      - ./app:/var/www/html/app
+      - ./php7.4/var/www/composer:/var/www/composer
+      - ./php7.4/etc/apache2/sites-available/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./php7.4/var/www/html:/var/www/html
+      - ./php7.4/usr/local/etc/php:/usr/local/etc/php
+      - ./php7.4/var/log/apache2:/var/log/apache2
